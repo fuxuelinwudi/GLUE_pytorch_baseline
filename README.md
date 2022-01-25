@@ -11,8 +11,8 @@
 | SST-2 | Accuracy                     | 85.56       |
 | MRPC  | F1/Accuracy                  | 87.78       |
 | STS-B | Pearson/Spearman corr        | 85.76       |
-| QQP   | Accuracy/F1                  |  |
-| MNLI  | M acc/MisM acc               |  |
+| QQP   | Accuracy/F1                  | 90.39       |
+| MNLI  | M acc/MisM acc               | 84.34/84.13 |
 | QNLI  | Accuracy                     | 91.20       |
 | RTE   | Accuracy                     | 62.82       |
 | WNLI  | Accuracy                     | 56.34       |
