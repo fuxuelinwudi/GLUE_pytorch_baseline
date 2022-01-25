@@ -3,7 +3,7 @@
 
 # [GLUE] (https://gluebenchmark.com/tasks)
 
-# 后续未完成的实验会补充。
+# unfinished experiments will be added.
 
 | Task  | Metric                       | [BERT-base-uncased](https://huggingface.co/bert-base-uncased)|
 |-------|------------------------------|-------------|
