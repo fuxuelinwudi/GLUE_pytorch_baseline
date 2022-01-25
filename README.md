@@ -21,7 +21,7 @@
 # hyperparameter setting
 
 | hypers name | value |
-|-------|-----|-------|
+|-------|-------|
 | lr  | 5e-5 |
 | weight decay | 0.01 |
 | warmup ratio  | 0.1 |
