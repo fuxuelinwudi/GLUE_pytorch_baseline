@@ -3,7 +3,7 @@
 
 # [GLUE] (https://gluebenchmark.com/tasks)
 
-# unfinished experiments will be added.
+# Validation support only, unfinished experiments will be added.
 
 | Task  | Metric                       | [BERT-base-uncased](https://huggingface.co/bert-base-uncased)|
 |-------|------------------------------|-------------|
