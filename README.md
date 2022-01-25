@@ -13,4 +13,4 @@
 | MNLI  | M acc/MisM acc               |  |
 | QNLI  | Accuracy                     | 91.20       |
 | RTE   | Accuracy                     | 62.82       |
-| WNLI  | Accuracy                     ||
+| WNLI  | Accuracy                     | 56.34       |
