@@ -20,6 +20,7 @@ class BertForSequenceClassification(BertPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
         self.num_labels = 2
+        self.dropout = nn.Dropout(0.1)
         self.bert = BertModel(config)
         self.classifier = nn.Linear(config.hidden_size, self.num_labels)
 
@@ -31,6 +32,8 @@ class BertForSequenceClassification(BertPreTrainedModel):
             token_type_ids=token_type_ids,
             return_dict=False
         )
+
+        pooled_out = self.dropout(pooled_out)
 
         logits = self.classifier(pooled_out)
         outputs = (logits,) + (pooled_out,)
@@ -47,16 +50,16 @@ def read_data(args, tokenizer):
     train_inputs = defaultdict(list)
     with open(args.train_path, 'r', encoding='utf-8') as f:
         for line_id, line in enumerate(f):
-            content_a, content_b, label = line.strip().split('\t')
+            sentence_a, sentence_b, label = line.strip().split('\t')
             label = int(label)
-            build_bert_inputs(train_inputs, label, content_a, tokenizer, content_b)
+            build_bert_inputs(train_inputs, label, sentence_a, tokenizer, sentence_b)
 
     dev_inputs = defaultdict(list)
     with open(args.dev_path, 'r', encoding='utf-8') as f:
         for line_id, line in enumerate(f):
-            content_a, content_b, label = line.strip().split('\t')
+            sentence_a, sentence_b, label = line.strip().split('\t')
             label = int(label)
-            build_bert_inputs(dev_inputs, label, content_a, tokenizer, content_b)
+            build_bert_inputs(dev_inputs, label, sentence_a, tokenizer, sentence_b)
 
     train_cache_pkl_path = os.path.join(args.data_cache_path, 'train.pkl')
     dev_cache_pkl_path = os.path.join(args.data_cache_path, 'dev.pkl')
@@ -98,6 +101,7 @@ def train(args):
             batch_cuda = batch2cuda(args, batch)
             loss, logits = model(**batch_cuda)[:2]
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
             total_loss += loss.item()
             cur_avg_loss += loss.item()
@@ -114,8 +118,8 @@ def train(args):
                 print(f"\n>> epoch - {epoch},  global steps - {global_steps + 1}, "
                       f"epoch avg loss - {epoch_avg_loss:.4f}, global avg loss - {global_avg_loss:.4f}.")
 
-                metric = evaluation_f1(args, model, dev_dataloader)
-                acc, avg_val_loss = metric['f1'], metric['avg_val_loss']
+                metric = evaluation(args, model, dev_dataloader)
+                acc, avg_val_loss = metric['acc'], metric['avg_val_loss']
 
                 if acc > best_acc_score:
                     best_acc_score = acc
@@ -124,6 +128,9 @@ def train(args):
 
                     print(f'\n>>>\n    best acc - {best_acc_score}, '
                           f'dev loss - {avg_val_loss} .')
+
+                model.train()
+                cur_avg_loss = 0.
 
             global_steps += 1
 
@@ -135,11 +142,11 @@ def train(args):
     best_model = BertForSequenceClassification.from_pretrained(args.output_path)
     best_model.to(args.device)
 
-    metric = evaluation_f1(args, best_model, dev_dataloader)
-    acc, avg_val_loss = metric['f1'], metric['avg_val_loss']
+    metric = evaluation(args, best_model, dev_dataloader)
+    acc, avg_val_loss = metric['acc'], metric['avg_val_loss']
 
     print(f'\n>>>\n    best acc - {best_acc_score}, dev loss - {avg_val_loss} .')
-    os.makedirs(os.path.join(args.output_path, f'f1-{best_acc_score}'), exist_ok=True)
+    os.makedirs(os.path.join(args.output_path, f'acc-{best_acc_score}'), exist_ok=True)
 
     del model, best_model, tokenizer, optimizer, scheduler
     torch.cuda.empty_cache()
@@ -171,9 +178,9 @@ def main(task_type):
     parser.add_argument('--warmup_ratio', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.01)
 
-    parser.add_argument('--logging_step', type=int, default=2000)
+    parser.add_argument('--logging_step', type=int, default=3411)  # evaluate 10 times
 
-    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--seed', type=int, default=2021)
     parser.add_argument('--device', type=str, default='cuda')
 
     warnings.filterwarnings('ignore')
