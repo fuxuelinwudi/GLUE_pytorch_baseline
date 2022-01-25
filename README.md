@@ -16,3 +16,15 @@
 | QNLI  | Accuracy                     | 91.20       |
 | RTE   | Accuracy                     | 62.82       |
 | WNLI  | Accuracy                     | 56.34       |
+
+
+# hyperparameter setting
+
+| hypers name | value |
+|-------|-----|-------|
+| lr  | 5e-5 |
+| weight decay | 0.01 |
+| warmup ratio  | 0.1 |
+| epoch | 3 |
+| sequence length | 128 |
+| seed | 2021 |
