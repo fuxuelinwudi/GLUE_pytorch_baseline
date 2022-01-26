@@ -21,7 +21,7 @@
 # hyperparameter setting
 
 | task name | learning rate | weight deacay | warmup ratio | epoch | sequence length | seed |
-|-------|-------|-------|-------|-------|-------|-------|
+|-------|------|------|-----|---|-----|------|
 | CoLA  | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | SST-2 | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | MRPC | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
