@@ -178,7 +178,7 @@ def main(task_type):
     parser.add_argument('--warmup_ratio', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.01)
 
-    parser.add_argument('--logging_step', type=int, default=80)  # evaluate 10 times
+    parser.add_argument('--logging_step', type=int, default=631)  # evaluate 10 times
 
     parser.add_argument('--seed', type=int, default=2021)
     parser.add_argument('--device', type=str, default='cuda')
