@@ -8,7 +8,7 @@
 | Task  | Metric                       | [BERT-base-uncased](https://huggingface.co/bert-base-uncased)|
 |-------|------------------------------|--------|
 | CoLA  | Matthews corr                | 60.83 |
-| SST-2 | Accuracy                     | 92.55 |
+| SST-2 | Accuracy                     | 92.78 |
 | MRPC  | F1/Accuracy                  | 87.78 |
 | STS-B | Pearson/Spearman corr        | 85.76 |
 | QQP   | Accuracy/F1                  | 90.39 |
@@ -23,7 +23,7 @@
 | task name | learning rate | weight deacay | warmup ratio | epoch | sequence length | seed |
 |-------|------|------|-----|---|-----|------|
 | CoLA  | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
-| SST-2 | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| SST-2 | 2e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | MRPC | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | STS-B | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | QQP | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
