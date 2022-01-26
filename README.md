@@ -20,11 +20,14 @@
 
 # hyperparameter setting
 
-| hypers name | value |
-|-------|-------|
-| lr  | 5e-5 |
-| weight decay | 0.01 |
-| warmup ratio  | 0.1 |
-| epoch | 3 |
-| sequence length | 128 |
-| seed | 2021 |
+| task name | learning rate | weight deacay | warmup ratio | epoch | sequence length | seed |
+|-------|-------|-------|-------|-------|-------|-------|
+| CoLA  | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| SST-2 | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| MRPC | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| STS-B | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| QQP | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| MNLI | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| QNLI | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| RTE | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| WNLI | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
