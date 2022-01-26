@@ -89,7 +89,7 @@ def train(args):
     optimizer, scheduler = build_optimizer(args, model, total_steps)
 
     total_loss, cur_avg_loss, global_steps = 0., 0., 0
-    best_acc_score = 0.
+    best_f1_score = 0.
 
     for epoch in range(1, args.num_epochs + 1):
 
@@ -118,15 +118,15 @@ def train(args):
                 print(f"\n>> epoch - {epoch},  global steps - {global_steps + 1}, "
                       f"epoch avg loss - {epoch_avg_loss:.4f}, global avg loss - {global_avg_loss:.4f}.")
 
-                metric = evaluation(args, model, dev_dataloader)
-                acc, avg_val_loss = metric['acc'], metric['avg_val_loss']
+                metric = evaluation_f1(args, model, dev_dataloader)
+                f1, avg_val_loss = metric['f1'], metric['avg_val_loss']
 
-                if acc > best_acc_score:
-                    best_acc_score = acc
+                if f1 > best_f1_score:
+                    best_f1_score = f1
                     model_save_path = args.output_path
                     save_model(model, tokenizer, model_save_path)
 
-                    print(f'\n>>>\n    best acc - {best_acc_score}, '
+                    print(f'\n>>>\n    best f1 - {best_f1_score}, '
                           f'dev loss - {avg_val_loss} .')
 
                 model.train()
@@ -142,11 +142,11 @@ def train(args):
     best_model = BertForSequenceClassification.from_pretrained(args.output_path)
     best_model.to(args.device)
 
-    metric = evaluation(args, best_model, dev_dataloader)
-    acc, avg_val_loss = metric['acc'], metric['avg_val_loss']
+    metric = evaluation_f1(args, best_model, dev_dataloader)
+    f1, avg_val_loss = metric['f1'], metric['avg_val_loss']
 
-    print(f'\n>>>\n    best acc - {best_acc_score}, dev loss - {avg_val_loss} .')
-    os.makedirs(os.path.join(args.output_path, f'acc-{best_acc_score}'), exist_ok=True)
+    print(f'\n>>>\n    best f1 - {best_f1_score}, dev loss - {avg_val_loss} .')
+    os.makedirs(os.path.join(args.output_path, f'f1-{best_f1_score}'), exist_ok=True)
 
     del model, best_model, tokenizer, optimizer, scheduler
     torch.cuda.empty_cache()

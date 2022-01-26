@@ -16,13 +16,12 @@ sys.path.append('../../src')
 multiprocessing.set_sharing_strategy('file_system')
 
 
-class BertForSequenceClassification(BertPreTrainedModel):
+class BertForQuestionAnswering(BertPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
         self.num_labels = 2
-        self.dropout = nn.Dropout(0.1)
         self.bert = BertModel(config)
-        self.classifier = nn.Linear(config.hidden_size, self.num_labels)
+        self.qa_outputs = nn.Linear(config.hidden_size, self.num_labels)
 
     def forward(self, input_ids=None, attention_mask=None, token_type_ids=None, labels=None):
 
@@ -32,8 +31,6 @@ class BertForSequenceClassification(BertPreTrainedModel):
             token_type_ids=token_type_ids,
             return_dict=False
         )
-
-        pooled_out = self.dropout(pooled_out)
 
         logits = self.classifier(pooled_out)
         outputs = (logits,) + (pooled_out,)
@@ -50,16 +47,16 @@ def read_data(args, tokenizer):
     train_inputs = defaultdict(list)
     with open(args.train_path, 'r', encoding='utf-8') as f:
         for line_id, line in enumerate(f):
-            sentence_a, sentence_b, label = line.strip().split('\t')
+            content, label = line.strip().split('\t')
             label = int(label)
-            build_bert_inputs(train_inputs, label, sentence_a, tokenizer, sentence_b)
+            build_bert_inputs(train_inputs, label, content, tokenizer)
 
     dev_inputs = defaultdict(list)
     with open(args.dev_path, 'r', encoding='utf-8') as f:
         for line_id, line in enumerate(f):
-            sentence_a, sentence_b, label = line.strip().split('\t')
+            content, label = line.strip().split('\t')
             label = int(label)
-            build_bert_inputs(dev_inputs, label, sentence_a, tokenizer, sentence_b)
+            build_bert_inputs(dev_inputs, label, content, tokenizer)
 
     train_cache_pkl_path = os.path.join(args.data_cache_path, 'train.pkl')
     dev_cache_pkl_path = os.path.join(args.data_cache_path, 'dev.pkl')
@@ -89,7 +86,7 @@ def train(args):
     optimizer, scheduler = build_optimizer(args, model, total_steps)
 
     total_loss, cur_avg_loss, global_steps = 0., 0., 0
-    best_f1_score = 0.
+    best_mcc_score = 0.
 
     for epoch in range(1, args.num_epochs + 1):
 
@@ -118,15 +115,15 @@ def train(args):
                 print(f"\n>> epoch - {epoch},  global steps - {global_steps + 1}, "
                       f"epoch avg loss - {epoch_avg_loss:.4f}, global avg loss - {global_avg_loss:.4f}.")
 
-                metric = evaluation(args, model, dev_dataloader)
-                f1, avg_val_loss = metric['acc'], metric['avg_val_loss']
+                metric = evaluation_mcc(args, model, dev_dataloader)
+                mcc, avg_val_loss = metric['mcc'], metric['avg_val_loss']
 
-                if f1 > best_f1_score:
-                    best_f1_score = f1
+                if mcc > best_mcc_score:
+                    best_mcc_score = mcc
                     model_save_path = args.output_path
                     save_model(model, tokenizer, model_save_path)
 
-                    print(f'\n>>>\n    best f1 - {best_f1_score}, '
+                    print(f'\n>>>\n    best acc - {best_mcc_score}, '
                           f'dev loss - {avg_val_loss} .')
 
                 model.train()
@@ -142,11 +139,11 @@ def train(args):
     best_model = BertForSequenceClassification.from_pretrained(args.output_path)
     best_model.to(args.device)
 
-    metric = evaluation(args, best_model, dev_dataloader)
-    f1, avg_val_loss = metric['acc'], metric['avg_val_loss']
+    metric = evaluation_mcc(args, best_model, dev_dataloader)
+    mcc, avg_val_loss = metric['mcc'], metric['avg_val_loss']
 
-    print(f'\n>>>\n    best f1 - {best_f1_score}, dev loss - {avg_val_loss} .')
-    os.makedirs(os.path.join(args.output_path, f'acc-{best_f1_score}'), exist_ok=True)
+    print(f'\n>>>\n    best mcc - {best_mcc_score}, dev loss - {avg_val_loss} .')
+    os.makedirs(os.path.join(args.output_path, f'acc-{best_mcc_score}'), exist_ok=True)
 
     del model, best_model, tokenizer, optimizer, scheduler
     torch.cuda.empty_cache()
@@ -168,7 +165,7 @@ def main(task_type):
     parser.add_argument('--model_path', type=str,
                         default=f'../../user_data/pretrain_model/bert-base')
 
-    parser.add_argument('--num_epochs', type=int, default=5)
+    parser.add_argument('--num_epochs', type=int, default=3)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--max_seq_len', type=int, default=128)
 
@@ -178,7 +175,7 @@ def main(task_type):
     parser.add_argument('--warmup_ratio', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.01)
 
-    parser.add_argument('--logging_step', type=int, default=64)  # evaluate 10 times
+    parser.add_argument('--logging_step', type=int, default=80)  # evaluate 10 times
 
     parser.add_argument('--seed', type=int, default=2021)
     parser.add_argument('--device', type=str, default='cuda')
@@ -194,4 +191,4 @@ def main(task_type):
 
 
 if __name__ == '__main__':
-    main('mprc')
+    main('squad1.1')

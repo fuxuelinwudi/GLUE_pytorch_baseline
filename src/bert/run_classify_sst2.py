@@ -172,7 +172,7 @@ def main(task_type):
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--max_seq_len', type=int, default=128)
 
-    parser.add_argument('--learning_rate', type=float, default=5e-5)
+    parser.add_argument('--learning_rate', type=float, default=2e-5)
     parser.add_argument('--eps', type=float, default=1e-8)
 
     parser.add_argument('--warmup_ratio', type=float, default=0.1)

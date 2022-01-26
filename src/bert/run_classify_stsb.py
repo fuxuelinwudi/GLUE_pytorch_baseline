@@ -168,7 +168,7 @@ def main(task_type):
     parser.add_argument('--model_path', type=str,
                         default=f'../../user_data/pretrain_model/bert-base')
 
-    parser.add_argument('--num_epochs', type=int, default=3)
+    parser.add_argument('--num_epochs', type=int, default=4)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--max_seq_len', type=int, default=128)
 
@@ -178,7 +178,7 @@ def main(task_type):
     parser.add_argument('--warmup_ratio', type=float, default=0.1)
     parser.add_argument('--weight_decay', type=float, default=0.01)
 
-    parser.add_argument('--logging_step', type=int, default=54)  # evaluate 10 times
+    parser.add_argument('--logging_step', type=int, default=72)  # evaluate 10 times
 
     parser.add_argument('--seed', type=int, default=2021)
     parser.add_argument('--device', type=str, default='cuda')
