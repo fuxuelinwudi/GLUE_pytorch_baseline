@@ -10,7 +10,7 @@
 | CoLA  | Matthews corr                | 60.83 |
 | SST-2 | Accuracy                     | 92.78 |
 | MRPC  | F1/Accuracy                  | 88.89 |
-| STS-B | Pearson/Spearman corr        | 85.76 |
+| STS-B | Pearson/Spearman corr        | 85.87 |
 | QQP   | Accuracy/F1                  | 90.39 |
 | MNLI  | M acc/MisM acc               | 84.34/84.66 |
 | QNLI  | Accuracy                     | 91.20 |
@@ -25,7 +25,7 @@
 | CoLA  | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | SST-2 | 2e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | MRPC | 5e-5 | 0.01 | 0.1 | 5 | 128 | 2021 |
-| STS-B | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
+| STS-B | 5e-5 | 0.01 | 0.1 | 4 | 128 | 2021 |
 | QQP | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | MNLI | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
 | QNLI | 5e-5 | 0.01 | 0.1 | 3 | 128 | 2021 |
